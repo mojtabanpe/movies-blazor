@@ -1,0 +1,61 @@
+﻿@page "/"
+@using movies.Services
+@using movies.Models
+@inject TMDBClient TMDB
+@inject NavigationManager NavManager
+
+<PageTitle>Popular Movies</PageTitle>
+<div class="container-xxl py-3">
+        <h1 class="display-6">
+            <span class="text-danger"><i class="bi bi-fire"></i></span>
+            PopularMovies
+        </h1>
+    <div class="d-flex flex-column flex-md-row justify-content-between my-3">
+
+        <div class="row row-cols-2 row-cols-lg-4 row-cols-xl-5 g-3 justify-content-center justify-content-md-start">
+            @if (movies is not null)
+            {
+                @foreach (PopularMovie Movie in movies.Results)
+                {
+                    <div class="col">
+                        <MovieCard Movie="Movie"/>
+                    </div>
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    <div class="col">
+                        <MovieCard />
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    @if (movies?.TotalPages > 1)
+    {
+        <div class="my-3">
+            <Paginator CurrentPage="movies.Page" TotalPages="movies.TotalPages > 500 ? 500 : movies.TotalPages" OnPageChange="GetPage"/>
+        </div>
+    }
+
+</div>
+
+@code {
+    private PopularMoviePagedResponse? movies;
+
+    [SupplyParameterFromQuery]
+    public int Page { get; set; } = 1;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        movies = await TMDB.GetPopularMoviesAsync(Page);
+    }
+
+    public void GetPage(int pageNumber)
+    {
+        string url = NavManager.GetUriWithQueryParameter("page", pageNumber);
+        NavManager.NavigateTo(url);
+    }
+}

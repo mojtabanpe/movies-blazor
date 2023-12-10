@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Layout\Footer.razor.css" />
+    <None Remove="Components\Layout\Footer.razor.css" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Layout\Footer.razor.css" />
+    <Content Include="Components\Layout\Footer.razor.css" />
   </ItemGroup>
 
   <ItemGroup>
